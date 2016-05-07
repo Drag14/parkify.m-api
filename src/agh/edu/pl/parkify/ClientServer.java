@@ -2,12 +2,14 @@ package agh.edu.pl.parkify;
 
 import akka.actor.ActorSystem;
 import akka.http.javadsl.Http;
+import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.model.ContentTypes;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.ResponseEntity;
 import akka.stream.ActorMaterializer;
 import akka.stream.Materializer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,19 +28,29 @@ public class ClientServer {
 	private final Materializer materializer = ActorMaterializer.create(system);
 
 	public void addParkingSpot(ParkingSpot parkingSpot, UUID user) {
-		requestPOST("/addParkingSpot", "");
-	}
+
+        String JSONtosend = null;
+        try {
+            JSONtosend = parkingSpot.addUUIDtoJSON(parkingSpot.toJSONString(), user);
+            //System.out.println(JSONtosend);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        requestPOST("http:/localhost:8080/spots", JSONtosend);
+    }
 
 	public void removeParkingSpot(ParkingSpot parkingSpot, UUID user) {
 		requestPOST("/removeParkingSpot", "");
 	}
 
-	public List<ParkingSpot> getParkingSpotsInRadius(WgsCoordinate coords, double radius) {
+	public List<ParkingSpot> getParkingSpotsInRadius(WGSCoordinate coords, double radius) {
 		ResponseEntity responseEntity = requestGET("/getParkingSpots", "");
 		ObjectMapper objMapper = new ObjectMapper();
 		List<ParkingSpot> spotsList = new ArrayList<>();
 		try {
-			spotsList = objMapper.readValue(responseEntity.toString(), new TypeReference<List<ParkingSpot>>(){});
+			spotsList = objMapper.readValue(responseEntity.toString(), new TypeReference<List<ParkingSpot>>() {
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

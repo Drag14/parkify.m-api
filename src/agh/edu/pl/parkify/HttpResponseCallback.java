@@ -5,7 +5,7 @@ import akka.http.javadsl.model.ResponseEntity;
 /**
  * Created by twozn on 05.05.2016.
  */
-public class HttpResponseCallback {
+class HttpResponseCallback {
 	private ResponseEntity responeEntity;
 
 	void onComplete(ResponseEntity responseEntity) {

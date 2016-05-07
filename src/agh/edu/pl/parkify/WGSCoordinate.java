@@ -3,11 +3,11 @@ package agh.edu.pl.parkify;
 /**
  * Created by twozn on 06.05.2016.
  */
-public class WgsCoordinate {
+public class WGSCoordinate {
 	private double longitude;
 	private double latitude;
 
-	public WgsCoordinate(double longitude, double latitude) {
+	public WGSCoordinate(double longitude, double latitude) {
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
